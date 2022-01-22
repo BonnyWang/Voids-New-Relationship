@@ -12,7 +12,7 @@ R_min = 0;
 def fileProcess():
     fd = open(fileIn);
     lines = fd.readlines();
-    lines = lines[1:];
+    lines = lines[50:1000];
     return lines;
 
 def findMaxValue(lines, Column):
@@ -24,13 +24,24 @@ def findMaxValue(lines, Column):
 
     return max;
 
+def plotRelationship(lines,column1,column2):
+    x = [];
+    y = [];
 
-if __name__ == "__main__":
-    lines = fileProcess();
-    N = 50;
-    x = np.random.rand(N);
-    y = np.random.rand(N);
+    for line in lines:
+        datas = line.split(" ");
+        x.append(datas[column1]);
+        y.append(datas[column2]);
+    
+    x = np.array(x);
+    y = np.array(y);
 
     plt.scatter(x, y);
     plt.show();
+
+if __name__ == "__main__":
+    lines = fileProcess();
+    plotRelationship(lines, 4,8);
+
+   
     print(findMaxValue(lines, 4));
