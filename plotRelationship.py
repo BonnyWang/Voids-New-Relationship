@@ -9,6 +9,9 @@ lines = [];
 R_max = 0;
 R_min = 0;
 
+bin_Number = 10;
+
+
 def fileProcess():
     fd = open(fileIn);
     lines = fd.readlines();
@@ -23,6 +26,17 @@ def findMaxValue(lines, Column):
             max = float(datas[Column]);
 
     return max;
+
+def divdeIntoBins(bin_Number, max, min = 0):
+    bins= np.zeros(bin_Number);
+
+    bin_Size = (max - min)/bin_Number;
+
+    for index in range(bin_Number):
+        bins[index] = bin_Size*(index+1);
+    
+    return bins;
+
 
 def plotRelationship(lines,column1,column2):
     x = [];
@@ -41,7 +55,11 @@ def plotRelationship(lines,column1,column2):
 
 if __name__ == "__main__":
     lines = fileProcess();
-    plotRelationship(lines, 4,8);
+
+    R_max = findMaxValue(lines, 4);
+    print(divdeIntoBins(bin_Number,R_max))
+
+    # plotRelationship(lines, 4,8);
 
    
-    print(findMaxValue(lines, 4));
+    # print(findMaxValue(lines, 4));
