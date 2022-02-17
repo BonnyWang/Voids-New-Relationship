@@ -1,4 +1,3 @@
-from operator import index
 import numpy as np;
 import matplotlib.pyplot as plt;
 import pandas as pd
@@ -14,11 +13,22 @@ def mergeTwoByColumn(file1, file2, key ,outFile):
 
 def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     data = pd.read_csv(file, sep=" ");
-    data["bin"] = pd.qcut(data[binColumnName], q=binNumber);
+    
+    min_value = data[binColumnName].min();
+    max_value = data[binColumnName].max();
+    
+    bins = np.linspace(min_value,max_value,binNumber);
+    
+    data["bin"] = pd.cut(data[binColumnName], bins=bins);
+    
 
     
     # print(data["bin"].value_counts());
     binnedData = data.groupby("bin").mean();
+    
+    # Use the middle value for each bin instead of bin average
+    binnedData[binColumnName] = [(bins[i] + bins[i+1])/2 for i in range(len(bins) - 1)];
+    
     binnedData_std = data.groupby("bin").std()
     binnedData[[binColumnName, statColumnName]].to_csv(outFile,sep=" ");
     
@@ -34,7 +44,7 @@ if __name__ == "__main__":
     
     mergeTwoByColumn(fileContainRadius, fileContainEllip,"voidID",Merged_Radius_Ellip);
         
-    bin_Radius_Ellip, bin_Radius_Ellip_std = divideToBins(Merged_Radius_Ellip,"radius(Mpc/h)",10,"ellip","ellipBined.txt");
+    bin_Radius_Ellip, bin_Radius_Ellip_std = divideToBins(Merged_Radius_Ellip,"radius(Mpc/h)",18,"ellip","ellipBined.txt");
     
     bin_Radius_Ellip.plot.scatter(x="radius(Mpc/h)", y="ellip", yerr=bin_Radius_Ellip_std);
     plt.show();
@@ -43,6 +53,6 @@ if __name__ == "__main__":
     
     FileContainDensity = "./untrimmed_centers_central_CMASS.out";
     
-    bin_Radius_CenterDensity, bin_Radius_CenterDensity_std = divideToBins(FileContainDensity,"radius(Mpc/h)",10,"densityContrast","densityContrastBined.txt");
+    bin_Radius_CenterDensity, bin_Radius_CenterDensity_std = divideToBins(FileContainDensity,"radius(Mpc/h)",18,"densityContrast","densityContrastBined.txt");
     bin_Radius_CenterDensity.plot.scatter(x="radius(Mpc/h)", y="densityContrast", yerr=bin_Radius_CenterDensity_std);
     plt.show();
