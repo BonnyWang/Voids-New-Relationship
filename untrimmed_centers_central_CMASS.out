@@ -1,4 +1,4 @@
-# center x,y,z (Mpc/h), volume (normalized), radius (Mpc/h), redshift, volume (Mpc/h^3), void ID, density contrast, num part, parent ID, tree level, number of children, central density
+x y z volume radius(Mpc/h) redshift volume(Mpc/h^3) voidID densityContrast numPart parentID treeLevel numberOfChildren centralDensity
 1254.15 3070.73 2110.07 0.86 12.52 0.50780 8223.72 62317 2.964103 8 -1 0 0 0.00
 1277.58 2040.88 3076.62 105.25 62.11 0.50162 1003715.38 80905 2.814725 316 -1 0 0 0.61
 235.26 2292.26 2305.66 1017.68 132.32 0.71522 9705046.28 56708 2.654120 378 -1 0 0 0.19
