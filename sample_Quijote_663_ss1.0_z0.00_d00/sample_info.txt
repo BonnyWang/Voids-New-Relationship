@@ -1,0 +1,16 @@
+Sample name: Quijote_663_ss1.0_z0.00_d00
+Sample nickname: Quijote_663_ss1.0_z0.00_d00
+Data type: simulation
+Redshift range: 0.000000 - 0.370000
+Particles placed on lightcone: 0
+Peculiar velocities included: 0
+Additional subsampling fraction: 0
+Simulation box length (Mpc/h): 1000
+Simulation Omega_M: 0.3223
+Number of simulation subvolumes: 1
+My subvolume index: 00
+Estimated volume (cubic Mpc/h): 1e+09
+Number of real (non-boundary) tracers: 415495
+Total number of tracers: 415495
+Estimated mean tracer separation (Mpc/h): 13.4012
+Minimum void size actually used (Mpc/h): 2

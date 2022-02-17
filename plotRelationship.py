@@ -14,7 +14,7 @@ R_min = 0;
 bin_Number = 10;
 binColumn = 4;
 # 8 is the density contrast and 
-statisticsColumn = 13;
+statisticsColumn = 8;
 
 
 
