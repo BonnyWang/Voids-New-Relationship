@@ -1,8 +1,10 @@
 from operator import index
+from os import sep
 import string
-from xml.dom import IndexSizeErr;
 import numpy as np;
 import matplotlib.pyplot as plt;
+import pandas as pd
+from sqlalchemy import false;
 
 
 fileIn = "./untrimmed_centers_central_CMASS.out";
@@ -82,7 +84,15 @@ def plotRelationship(lines,column1,column2):
 
     plt.scatter(x, y);
     plt.show();
-
+    
+def mergeTwoByColumn(file1, file2, key ,outFile):
+    data1 = pd.read_csv(file1, sep=" ");
+    data2 = pd.read_csv(file2, sep=" ");
+    
+    output = pd.merge(data1, data2, on=key, how="inner");
+    
+    output[["voidID","radius(Mpc/h)", "ellip"]].to_csv(outFile,sep=" ", index=False);
+    
 if __name__ == "__main__":
     
     
@@ -91,15 +101,20 @@ if __name__ == "__main__":
     R_max = findMaxValue(lines, binColumn);
     bins = divdeIntoBins(bin_Number,R_max);
     
-    statisticBins = calculateBinStatistics(lines,bins,binColumn,statisticsColumn);
+    fileContainRadius = "./sample_Quijote_663_ss1.0_z0.00_d00/sky_positions_all_Quijote_663_ss1.0_z0.00_d00.out";
+    fileContainEllip = "./sample_Quijote_663_ss1.0_z0.00_d00/shapes_all_Quijote_663_ss1.0_z0.00_d00.out";
+    mergeTwoByColumn(fileContainRadius, fileContainEllip,"voidID","./Merged.txt")
     
-    print(bins);
-    print(statisticBins);
+    # This is for whithin the file
+    # statisticBins = calculateBinStatistics(lines,bins,binColumn,statisticsColumn);
     
-    print(findMaxValue(lines, statisticsColumn))
+    # print(bins);
+    # print(statisticBins);
     
-    plt.scatter(bins, statisticBins);
-    plt.show();
+    # print(findMaxValue(lines, statisticsColumn))
+    
+    # plt.scatter(bins, statisticBins);
+    # plt.show();
 
     # plotRelationship(lines, 4,8);
 
