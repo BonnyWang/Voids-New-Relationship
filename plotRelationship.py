@@ -7,14 +7,14 @@ import pandas as pd
 from sqlalchemy import false;
 
 
-fileIn = "./untrimmed_centers_central_CMASS.out";
+fileIn = "./sample_Quijote_663_ss1.0_z0.00_d00/sky_positions_all_Quijote_663_ss1.0_z0.00_d00.out";
 lines = [];
 
 R_max = 0;
 R_min = 0;
 
 bin_Number = 10;
-binColumn = 4;
+binColumn = 3;
 # 8 is the density contrast and 
 statisticsColumn = 8;
 
@@ -92,6 +92,15 @@ def mergeTwoByColumn(file1, file2, key ,outFile):
     output = pd.merge(data1, data2, on=key, how="inner");
     
     output[["voidID","radius(Mpc/h)", "ellip"]].to_csv(outFile,sep=" ", index=False);
+
+def divideToBins(file, binColumnName, binNumber, outFile):
+    data = pd.read_csv(file, sep=" ");
+    data["bin"] = pd.qcut(data[binColumnName], q=binNumber);
+    
+    
+    # print(data["bin"].value_counts());
+    binnedData = data.groupby("bin").mean();
+    binnedData[["radius(Mpc/h)", "ellip"]].to_csv(outFile,sep=" ");
     
 if __name__ == "__main__":
     
@@ -101,9 +110,14 @@ if __name__ == "__main__":
     R_max = findMaxValue(lines, binColumn);
     bins = divdeIntoBins(bin_Number,R_max);
     
+    fileToPlot = "./Merged.txt";
+    
     fileContainRadius = "./sample_Quijote_663_ss1.0_z0.00_d00/sky_positions_all_Quijote_663_ss1.0_z0.00_d00.out";
     fileContainEllip = "./sample_Quijote_663_ss1.0_z0.00_d00/shapes_all_Quijote_663_ss1.0_z0.00_d00.out";
-    mergeTwoByColumn(fileContainRadius, fileContainEllip,"voidID","./Merged.txt")
+    mergeTwoByColumn(fileContainRadius, fileContainEllip,"voidID",fileToPlot);
+    
+    fileBined = "Merged_Bined.txt";
+    divideToBins(fileToPlot,"radius(Mpc/h)",10, fileBined);
     
     # This is for whithin the file
     # statisticBins = calculateBinStatistics(lines,bins,binColumn,statisticsColumn);
