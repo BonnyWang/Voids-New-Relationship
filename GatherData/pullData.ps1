@@ -1,0 +1,3 @@
+echo "Globus Test"
+globus transfer 6b4101f6-8b6e-11ec-8fde-dfc5b31adbac:/latin_hypercube/z0.0/Quijote_0_ss1.0/sample_Quijote_0_ss1.0_z0.00_d00/sky_positions_all_Quijote_0_ss1.0_z0.00_d00.out e3a96de0-975d-11ec-bf89-ab28bf5d96bb:/~/P/Globus/sample_Quijote_00_ss1.0_z0.00_d00/sky_positions_all_Quijote_0_ss1.0_z0.00_d00.out
+globus transfer 6b4101f6-8b6e-11ec-8fde-dfc5b31adbac:/latin_hypercube/z0.0/Quijote_1_ss1.0/sample_Quijote_1_ss1.0_z0.00_d00/shapes_all_Quijote_1_ss1.0_z0.00_d00.out e3a96de0-975d-11ec-bf89-ab28bf5d96bb:/~/P/Globus/sample_Quijote_1_ss1.0_z0.00_d00/shapes_all_Quijote_0_ss1.0_z0.00_d00.out
