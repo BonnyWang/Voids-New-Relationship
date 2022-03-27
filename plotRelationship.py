@@ -66,6 +66,12 @@ def mergeTwoByColumn(file1, file2, key ,outFile):
     output[["radius(Mpc/h)", "ellip"]].to_csv(outFile,sep=" ", index=False);
 
 def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
+    try:
+        open(file, "r");
+    except FileNotFoundError:
+        return;
+    
+    
     data = pd.read_csv(file, sep=" ");
     
     # data[binColumnName] = data[binColumnName];
@@ -79,10 +85,10 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     data["bin"] = pd.cut(data[binColumnName], bins=bins);
     
 
-    print(data["bin"].value_counts());
+    # print(data["bin"].value_counts());
     
     # Print the percentage of voids fall into the categorization compare to the whole dataset 
-    print(data["bin"].value_counts().sum()/ data.shape[0]);
+    # print(data["bin"].value_counts().sum()/ data.shape[0]);
     
     binnedData = data.groupby("bin").mean();
     
@@ -94,7 +100,15 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     
     
     # binnedData[[binColumnName, statColumnName]].to_csv(outFile ,sep=" ");
-    binnedData[[binColumnName, statColumnName]].to_csv(outFile ,sep=" ", index=False);
+    
+    # Fill in all the blanks with 0;
+    binnedData.fillna(0, inplace=True);
+    
+    # Rename for quick result
+    # TODO: need to change later
+    binnedData = binnedData.rename(columns={binColumnName: 'R', statColumnName: 'VSF'})
+    
+    binnedData[['R', 'VSF']].loc[::-1].reset_index(drop=True).to_csv(outFile);
     
     return binnedData, binnedData_std;
 
@@ -104,7 +118,21 @@ def createAllEllipRadiusFile():
         ChangeFirstLine(filesContainRadius[i]);
         ChangeFirstLine(filesContainEllips[i]);
         mergeTwoByColumn(filesContainRadius[i], filesContainEllips[i],"voidID",Merged_Radius_Ellip);
-    
+
+def generateRelation_per_Simulation():     
+    for i in range(2000):
+        outputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
+        mergeTwoByColumn(filesContainRadius[i], filesContainEllips[i],"voidID", outputFilePath);
+
+def generateAbundance():
+    for i in range(2000):
+        inputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
+        outFilePath = "./Abundance/abundance_z=0.0_" + str(i) + "_HR_linspace_60_5_19bins_untrimmed.csv";
+        
+        divideToBins(inputFilePath,"radius(Mpc/h)",18,"ellip",outFilePath);
+        
+     
+ 
 if __name__ == "__main__":
     
     
@@ -114,11 +142,10 @@ if __name__ == "__main__":
     
     # checkFileMissing();
     
-    for i in range(2000):
-        outputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
-        mergeTwoByColumn(filesContainRadius[i], filesContainEllips[i],"voidID", outputFilePath);
+    generateAbundance();
     
         
+
     
     # To plot the relationship
     # bin_Radius_Ellip, bin_Radius_Ellip_std = divideToBins(Merged_Radius_Ellip,"radius(Mpc/h)",18,"ellip","ellipBined.txt");
