@@ -7,6 +7,13 @@ from pytest import skip
 filesContainRadius = [];
 filesContainEllips = [];
 
+def checkFileMissing():
+    for i in range(2000):
+        try:
+            open(filesContainRadius[i]);
+        except FileNotFoundError:
+            print(i);
+
 def ChangeFirstLine(file):
     try:
         fp = open(file, "r");
@@ -66,7 +73,7 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     # min_value = data[binColumnName].min();
     # max_value = data[binColumnName].max();
     
-    bins = np.linspace(10.5,61.5,binNumber);
+    bins = np.linspace(9,63,binNumber+1);
     
     data["bin"] = pd.cut(data[binColumnName], bins=bins);
     
@@ -95,6 +102,9 @@ if __name__ == "__main__":
     Merged_Radius_Ellip = "./Merged_Radius_Ellip_All.txt";
     
     generateAllPath();
+    
+    # checkFileMissing();
+    
     
     # for i in range(2000):
         # ChangeFirstLine(filesContainRadius[i]);
