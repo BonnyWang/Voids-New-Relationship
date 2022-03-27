@@ -104,7 +104,9 @@ if __name__ == "__main__":
     bin_Radius_Ellip, bin_Radius_Ellip_std = divideToBins(Merged_Radius_Ellip,"radius(Mpc/h)",18,"ellip","ellipBined.txt");
     
     bin_Radius_Ellip.plot.scatter(x="radius(Mpc/h)", y="ellip", yerr=bin_Radius_Ellip_std);
+    plt.savefig("10.5_61.5_Ellip_Radius.pdf")
     plt.show();
+
     # #print(bin_Radius_Ellip.head())
     
     
