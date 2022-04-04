@@ -84,6 +84,7 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     bins = np.linspace(9,63,binNumber+1);
     
     # Change the last number so that the last bin include the biggest ones
+    bins[0] = -1;
     bins[len(bins)-1] = INFINITE;
     
     data["bin"] = pd.cut(data[binColumnName], bins=bins);
