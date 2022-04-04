@@ -1,3 +1,4 @@
+from asyncio.windows_events import INFINITE
 from importlib.metadata import files
 import numpy as np;
 import matplotlib.pyplot as plt;
@@ -82,19 +83,24 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     
     bins = np.linspace(9,63,binNumber+1);
     
+    # Change the last number so that the last bin include the biggest ones
+    bins[len(bins)-1] = INFINITE;
+    
     data["bin"] = pd.cut(data[binColumnName], bins=bins);
     
 
     # print(data["bin"].value_counts());
     
     # Print the percentage of voids fall into the categorization compare to the whole dataset 
-    # print(data["bin"].value_counts().sum()/ data.shape[0]);
+    print(data["bin"].value_counts().sum()/ data.shape[0]);
     
     binnedData = data.groupby("bin").mean();
     
     
     # Use the middle value for each bin instead of bin average
-    binnedData[binColumnName] = [(bins[i] + bins[i+1])/2 for i in range(len(bins) - 1)];
+    # binnedData[binColumnName] = [(bins[i] + bins[i+1])/2 for i in range(len(bins) - 1)];
+    # Set the bin value as the middle range but include the ones that are bigger
+    binnedData[binColumnName] = [i for i in np.linspace(10.5,61.5,18)];
     
     binnedData_std = data.groupby("bin").std()
     
