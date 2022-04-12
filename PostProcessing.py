@@ -16,6 +16,9 @@ def getChiValue(observed, expected):
     
     print("chiValue is "+str(chiValue));
     
+    # Not working
+    # print(chisquare(observed,expected))
+    
     return chiValue;
 
 
@@ -24,5 +27,10 @@ if __name__ == "__main__":
     data = pd.read_csv("./Data/borrarEllipAll.txt", sep=" ", header=None);
     
     omegaM_True = data.iloc[:,0].to_numpy().ravel();    
-    omegaM__Predicted = data.iloc[:,5].to_numpy().ravel();
-    getChiValue(omegaM__Predicted, omegaM_True);
+    omegaM_Predicted = data.iloc[:,5].to_numpy().ravel();
+    
+    ns_True = data.iloc[:,3].to_numpy().ravel();    
+    ns_Predicted = data.iloc[:,8].to_numpy().ravel();
+    
+    getChiValue(omegaM_Predicted, omegaM_True);
+    getChiValue(ns_Predicted, ns_True);
