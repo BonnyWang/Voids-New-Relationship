@@ -119,3 +119,5 @@ dmypy.json
 *.out
 Merged_Radius_Ellip_All.txt
 *.csv
+*.txt
+*.pdf
