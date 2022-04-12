@@ -1,3 +1,4 @@
+import math
 from operator import length_hint
 from scipy.stats import chisquare
 import pandas as pd;
@@ -15,8 +16,16 @@ def getChiValue():
     # print(len(omegaM_True));    
     # print(len(omegaM__Predicted));    
     
-    # Not working
-    # chi, p = chisquare(omegaM__Predicted, omegaM_True);
+    chiValue = 0;
+    
+    for i in range(len(omegaM_True)):
+        differance = omegaM__Predicted[i] - omegaM_True[i];
+        squared = math.pow(differance,2);
+        chiValue += squared/omegaM_True[i];
+    
+    print("chiValue is "+str(chiValue));
+    
+    return chiValue;
 
 
 if __name__ == "__main__":
