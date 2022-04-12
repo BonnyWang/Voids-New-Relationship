@@ -6,22 +6,13 @@ import numpy as np;
 
 # Chi value test
 
-def getChiValue():
-    
-    data = pd.read_csv("./Data/borrarEllipAll.txt", sep=" ", header=None);
-    
-    omegaM_True = data.iloc[:,0].to_numpy().ravel();    
-    omegaM__Predicted = data.iloc[:,5].to_numpy().ravel();
-    
-    # print(len(omegaM_True));    
-    # print(len(omegaM__Predicted));    
-    
+def getChiValue(observed, expected):
     chiValue = 0;
     
-    for i in range(len(omegaM_True)):
-        differance = omegaM__Predicted[i] - omegaM_True[i];
+    for i in range(len(expected)):
+        differance = observed[i] - expected[i];
         squared = math.pow(differance,2);
-        chiValue += squared/omegaM_True[i];
+        chiValue += squared/expected[i];
     
     print("chiValue is "+str(chiValue));
     
@@ -29,4 +20,9 @@ def getChiValue():
 
 
 if __name__ == "__main__":
-    getChiValue();
+        
+    data = pd.read_csv("./Data/borrarEllipAll.txt", sep=" ", header=None);
+    
+    omegaM_True = data.iloc[:,0].to_numpy().ravel();    
+    omegaM__Predicted = data.iloc[:,5].to_numpy().ravel();
+    getChiValue(omegaM__Predicted, omegaM_True);
