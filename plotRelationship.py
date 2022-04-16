@@ -84,7 +84,7 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     bins = np.linspace(9,63,binNumber+1);
     
     # Change the last number so that all the voids are included
-    # bins[0] = ;
+    bins[0] = 0;
     bins[len(bins)-1] = INFINITE;
     
     data["bin"] = pd.cut(data[binColumnName], bins=bins);
@@ -131,14 +131,20 @@ def generateRelation_per_Simulation():
         outputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
         mergeTwoByColumn(filesContainRadius[i], filesContainEllips[i],"voidID", outputFilePath);
 
-def generateAbundance():
+def generateAbundance_Ellip():
     for i in range(2000):
         inputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
         outFilePath = "./Abundance/abundance_z=0.0_" + str(i) + "_HR_linspace_60_5_19bins_untrimmed.csv";
         
         divideToBins(inputFilePath,"radius(Mpc/h)",18,"ellip",outFilePath);
         
-     
+
+def generateAbundance_DensityContrast():
+    for i in range(2000):
+        inputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
+        outFilePath = "./Abundance/abundance_z=0.0_" + str(i) + "_HR_linspace_60_5_19bins_untrimmed.csv";
+        
+        divideToBins(inputFilePath,"radius(Mpc/h)",18,"densitycontrast",outFilePath);  
  
 if __name__ == "__main__":
     
@@ -149,7 +155,7 @@ if __name__ == "__main__":
     
     # checkFileMissing();
     
-    generateAbundance();
+    generateAbundance_Ellip();
     
         
 
