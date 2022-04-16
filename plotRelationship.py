@@ -141,7 +141,7 @@ def generateAbundance_Ellip():
 
 def generateAbundance_DensityContrast():
     for i in range(2000):
-        inputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
+        inputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/centers_all_Quijote_HR_"+ str(i) + "_ss1.0_z0.00_d00.out";
         outFilePath = "./Abundance/abundance_z=0.0_" + str(i) + "_HR_linspace_60_5_19bins_untrimmed.csv";
         
         divideToBins(inputFilePath,"radius(Mpc/h)",18,"densitycontrast",outFilePath);  
@@ -155,7 +155,8 @@ if __name__ == "__main__":
     
     # checkFileMissing();
     
-    generateAbundance_Ellip();
+    # generateAbundance_Ellip();
+    generateAbundance_DensityContrast();
     
         
 
