@@ -5,6 +5,8 @@ import pandas as pd;
 import numpy as np;
 
 # Chi value test
+def getMesurements():
+    getChiValue();
 
 def getChiValue(observed, expected, error):
     sum = 0;
