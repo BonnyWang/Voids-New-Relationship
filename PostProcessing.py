@@ -1,8 +1,10 @@
 import math
+from unittest import result
 import pandas as pd;
 import numpy as np;
+from prettytable import PrettyTable
 
-def getMesurements(predicted, expected, error, parameter_Name):
+def getMesurements(predicted, expected, error, parameter_Name, resultTable):
     RMSE = getRMSE(predicted, expected);
     RSqaure = getRSquare_Coefficent(predicted, expected);
     ErrorOver_Prediction = getErrorOver_Prediction(predicted, error);
@@ -10,10 +12,12 @@ def getMesurements(predicted, expected, error, parameter_Name):
     
     print(parameter_Name + "'s RMSE is " + str(RMSE));
     print(parameter_Name + "'s Rsqaured is " + str(RSqaure));
-    print(parameter_Name + "'s |Error|/Preiciton is " + str(ErrorOver_Prediction));
+    print(parameter_Name + "'s |Error|/Prediction is " + str(ErrorOver_Prediction));
     print(parameter_Name + "'s chiValue is " + str(chiValue));
     
     print("");
+    
+    resultTable.add_row([parameter_Name, RMSE, RSqaure, ErrorOver_Prediction, chiValue]);
     
     return RMSE, RSqaure, ErrorOver_Prediction, chiValue;
     
@@ -62,8 +66,14 @@ def calculateForEllipAll():
     ns_Predicted = data.iloc[:,8].to_numpy().ravel();
     ns_Error = data.iloc[:,13].to_numpy().ravel();
     
-    getMesurements(omegaM_Predicted,omegaM_True,omegaM_Error, "OmegaM");
-    getMesurements(ns_Predicted,ns_True,ns_Error, "ns");
+    resultTable = PrettyTable(["Parameter","RMSE","RSqaure", "ErrorOver_Prediction", "chiValue"]);
+    
+    getMesurements(omegaM_Predicted,omegaM_True,omegaM_Error, "OmegaM",resultTable);
+    getMesurements(ns_Predicted,ns_True,ns_Error, "ns",resultTable);
+    
+    resultTable.float_format = '.4';
+    print("Ellip:");
+    print(resultTable);
     
 def calculateForDensityContrastl():
     data = pd.read_csv("./Data/borrarDensityContrast.txt", sep=" ", header=None);
@@ -80,10 +90,15 @@ def calculateForDensityContrastl():
     sigma8_Predicted = data.iloc[:,9].to_numpy().ravel();
     sigma8_Error = data.iloc[:,14].to_numpy().ravel();
     
-    getMesurements(omegaM_Predicted,omegaM_True, omegaM_Error, "omegaM");
-    getMesurements(ns_Predicted,ns_True, ns_Error, "ns");
-    getMesurements(sigma8_Predicted,sigma8_True, sigma8_Error, "sigma8");
+    resultTable = PrettyTable(["Parameter","RMSE","RSqaure", "ErrorOver_Prediction", "chiValue"]);
     
+    getMesurements(omegaM_Predicted,omegaM_True, omegaM_Error, "omegaM", resultTable);
+    getMesurements(ns_Predicted,ns_True, ns_Error, "ns", resultTable);
+    getMesurements(sigma8_Predicted,sigma8_True, sigma8_Error, "sigma8", resultTable);
+    
+    resultTable.float_format = '.4';
+    print("Density Contrast:");
+    print(resultTable);
 
 if __name__ == "__main__":
     
