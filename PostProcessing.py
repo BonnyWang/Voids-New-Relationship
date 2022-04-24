@@ -1,29 +1,55 @@
 import math
-from operator import length_hint
-from scipy.stats import chisquare
 import pandas as pd;
 import numpy as np;
 
-# Chi value test
-def getMesurements():
-    getChiValue();
-
-def getChiValue(observed, expected, error):
+def getMesurements(predicted, expected, error, parameter_Name):
+    RMSE = getRMSE(predicted, expected);
+    RSqaure = getRSquare_Coefficent(predicted, expected);
+    ErrorOver_Prediction = getErrorOver_Prediction(predicted, error);
+    chiValue = getChiValue(predicted, expected, error);
+    
+    print(parameter_Name + "'s RMSE is " + str(RMSE));
+    print(parameter_Name + "'s Rsqaured is " + str(RSqaure));
+    print(parameter_Name + "'s |Error|/Preiciton is " + str(ErrorOver_Prediction));
+    print(parameter_Name + "'s chiValue is " + str(chiValue));
+    
+    print("");
+    
+    return RMSE, RSqaure, ErrorOver_Prediction, chiValue;
+    
+# Normalized chi value
+def getChiValue(predicted, expected, error):
     sum = 0;
-    size = len(observed)
+    size = len(predicted)
     
     for i in range(len(expected)):
-        differance = observed[i] - expected[i];
+        differance = predicted[i] - expected[i];
         squared = math.pow(differance,2);
         error_Divided = squared/math.pow(error[i],2);
         sum += error_Divided;
     
     chiValue = sum/size;
     
-    # Not working
-    # print(chisquare(observed,expected))
     
     return chiValue;
+
+def getRMSE(predicted, expected):
+    MSE = np.square(np.subtract(expected,predicted)).mean(); 
+ 
+    RMSE = math.sqrt(MSE);
+    
+    return RMSE;
+
+def getRSquare_Coefficent(predicted, expected):
+    RSS =np.square(np.subtract(predicted, expected)).sum();
+    TSS = np.square(np.subtract(predicted, np.mean(predicted))).sum();
+    
+    RSquared = 1 - RSS/TSS;
+    
+    return RSquared;
+    
+def getErrorOver_Prediction(predicted, error):
+    return np.divide(np.abs(error), predicted).mean();
 
 def calculateForEllipAll():
     data = pd.read_csv("./Data/borrarEllipAll.txt", sep=" ", header=None);
@@ -34,13 +60,10 @@ def calculateForEllipAll():
     
     ns_True = data.iloc[:,3].to_numpy().ravel();    
     ns_Predicted = data.iloc[:,8].to_numpy().ravel();
-    ns_error = data.iloc[:,13].to_numpy().ravel();
+    ns_Error = data.iloc[:,13].to_numpy().ravel();
     
-    chi_OmegaM = getChiValue(omegaM_Predicted, omegaM_True,omegaM_Error);
-    chi_Ns = getChiValue(ns_Predicted, ns_True, ns_error);
-    
-    print("OmegaM Chi Value:" + str(chi_OmegaM));
-    print("Ns Chi Value:" + str(chi_Ns));
+    getMesurements(omegaM_Predicted,omegaM_True,omegaM_Error, "OmegaM");
+    getMesurements(ns_Predicted,ns_True,ns_Error, "ns");
     
 def calculateForDensityContrastl():
     data = pd.read_csv("./Data/borrarDensityContrast.txt", sep=" ", header=None);
@@ -51,22 +74,21 @@ def calculateForDensityContrastl():
     
     ns_True = data.iloc[:,3].to_numpy().ravel();    
     ns_Predicted = data.iloc[:,8].to_numpy().ravel();
-    ns_error = data.iloc[:,13].to_numpy().ravel();
+    ns_Error = data.iloc[:,13].to_numpy().ravel();
     
     sigma8_True = data.iloc[:,4].to_numpy().ravel();    
     sigma8_Predicted = data.iloc[:,9].to_numpy().ravel();
-    sigma8_error = data.iloc[:,14].to_numpy().ravel();
+    sigma8_Error = data.iloc[:,14].to_numpy().ravel();
     
-    chi_OmegaM = getChiValue(omegaM_Predicted, omegaM_True,omegaM_Error);
-    chi_Ns = getChiValue(ns_Predicted, ns_True, ns_error);
-    chi_sigma8 = getChiValue(sigma8_Predicted, sigma8_True, sigma8_error);
-    
-    print("OmegaM Chi Value:" + str(chi_OmegaM));
-    print("Ns Chi Value:" + str(chi_Ns));
-    print("Sigma8 Chi Value:" + str(chi_sigma8));
+    getMesurements(omegaM_Predicted,omegaM_True, omegaM_Error, "omegaM");
+    getMesurements(ns_Predicted,ns_True, ns_Error, "ns");
+    getMesurements(sigma8_Predicted,sigma8_True, sigma8_Error, "sigma8");
     
 
 if __name__ == "__main__":
-        
-    # calculateForEllipAll();
+    
+    print("Ellip:");    
+    calculateForEllipAll();
+    
+    print("Density Contrast:");
     calculateForDensityContrastl();
