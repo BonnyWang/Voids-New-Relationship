@@ -45,8 +45,8 @@ def getRMSE(predicted, expected):
     return RMSE;
 
 def getRSquare_Coefficent(predicted, expected):
-    RSS =np.square(np.subtract(predicted, expected)).sum();
-    TSS = np.square(np.subtract(predicted, np.mean(predicted))).sum();
+    RSS =np.square(np.subtract(expected, predicted)).sum();
+    TSS = np.square(np.subtract(expected, np.mean(expected))).sum();
     
     RSquared = 1 - RSS/TSS;
     
