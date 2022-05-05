@@ -78,16 +78,18 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     # data[binColumnName] = data[binColumnName];
     # data[statColumnName] = data[statColumnName];
     
-    # min_value = data[binColumnName].min();
-    # max_value = data[binColumnName].max();
+    # min_value = data[statColumnName].min();
+    # max_value = data[statColumnName].max();
     
-    bins = np.linspace(9,63,binNumber+1);
+    bins = np.linspace(0,1,binNumber+1);
     
     # Change the last number so that all the voids are included
     bins[0] = 0;
     bins[len(bins)-1] = INFINITE;
     
-    data["bin"] = pd.cut(data[binColumnName], bins=bins);
+    # print(bins)
+    
+    data["bin"] = pd.cut(data[statColumnName], bins=bins);
     
 
     # print(data["bin"].value_counts());
@@ -95,13 +97,13 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     # Print the percentage of voids fall into the categorization compare to the whole dataset 
     print(data["bin"].value_counts().sum()/ data.shape[0]);
     
-    binnedData = data.groupby("bin").mean();
+    binnedData = data.groupby("bin").count()/data.shape[0];
     
     
     # Use the middle value for each bin instead of bin average
     # binnedData[binColumnName] = [(bins[i] + bins[i+1])/2 for i in range(len(bins) - 1)];
     # Set the bin value as the middle range but include the ones that are bigger
-    binnedData[binColumnName] = [i for i in np.linspace(10.5,61.5,18)];
+    # binnedData[binColumnName] = [i for i in np.linspace(10.5,61.5,18)];
     
     binnedData_std = data.groupby("bin").std()
     
@@ -113,9 +115,9 @@ def divideToBins(file, binColumnName, binNumber,statColumnName, outFile):
     
     # Rename for quick result
     # TODO: need to change later
-    binnedData = binnedData.rename(columns={binColumnName: 'R', statColumnName: 'VSF'})
+    # binnedData = binnedData.rename(columns={binColumnName: 'R', statColumnName: 'VSF'})
     
-    binnedData[['R', 'VSF']].loc[::-1].reset_index(drop=True).to_csv(outFile);
+    binnedData[statColumnName].loc[::-1].reset_index(drop=True).to_csv(outFile);
     
     return binnedData, binnedData_std;
 
@@ -149,15 +151,21 @@ def generateAbundance_DensityContrast():
 if __name__ == "__main__":
     
     
-    Merged_Radius_Ellip = "./Merged_Radius_Ellip_All.txt";
+    Merged_Radius_Ellip = "./Merged_Radius_Density_Contrast";
     
     generateAllPath();
     
     # checkFileMissing();
     
     # generateAbundance_Ellip();
-    generateAbundance_DensityContrast();
+    # generateAbundance_DensityContrast();
     
+    data = pd.read_csv(Merged_Radius_Ellip, sep=" ");
+    bins = np.linspace(data["densitycontrast"].min(),4,19);
+    data["bin"] = pd.cut(data["densitycontrast"], bins=bins);
+    print(data.groupby("bin").count().loc[::-1]);
+    print(data["densitycontrast"].min());
+    print(data["densitycontrast"].max());
         
 
     

@@ -76,7 +76,7 @@ def calculateForEllipAll():
     print(resultTable);
     
 def calculateForDensityContrastl():
-    data = pd.read_csv("./Data/borrarDensityContrast.txt", sep=" ", header=None);
+    data = pd.read_csv("./borrarDensityContrast1.txt", sep=" ", header=None);
     
     omegaM_True = data.iloc[:,0].to_numpy().ravel();    
     omegaM_Predicted = data.iloc[:,5].to_numpy().ravel();
