@@ -56,15 +56,15 @@ def getErrorOver_Prediction(predicted, error):
     return np.divide(np.abs(error), predicted).mean();
 
 def calculateForEllipAll():
-    data = pd.read_csv("./Data/borrarEllipAll.txt", sep=" ", header=None);
+    data = pd.read_csv("./borrarDCMean36Para2.txt", sep=" ", header=None);
     
     omegaM_True = data.iloc[:,0].to_numpy().ravel();    
-    omegaM_Predicted = data.iloc[:,5].to_numpy().ravel();
-    omegaM_Error = data.iloc[:,10].to_numpy().ravel();
+    omegaM_Predicted = data.iloc[:,2].to_numpy().ravel();
+    omegaM_Error = data.iloc[:,4].to_numpy().ravel();
     
-    ns_True = data.iloc[:,3].to_numpy().ravel();    
-    ns_Predicted = data.iloc[:,8].to_numpy().ravel();
-    ns_Error = data.iloc[:,13].to_numpy().ravel();
+    ns_True = data.iloc[:,1].to_numpy().ravel();    
+    ns_Predicted = data.iloc[:,3].to_numpy().ravel();
+    ns_Error = data.iloc[:,5].to_numpy().ravel();
     
     resultTable = PrettyTable(["Parameter","RMSE","RSqaure", "ErrorOver_Prediction", "chiValue"]);
     
@@ -76,7 +76,7 @@ def calculateForEllipAll():
     print(resultTable);
     
 def calculateForDensityContrastl():
-    data = pd.read_csv("./borrarDensityContrast1.txt", sep=" ", header=None);
+    data = pd.read_csv("./borrarOri.txt", sep=" ", header=None);
     
     omegaM_True = data.iloc[:,0].to_numpy().ravel();    
     omegaM_Predicted = data.iloc[:,5].to_numpy().ravel();
