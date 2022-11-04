@@ -28,16 +28,26 @@ def plotRelationship(dataFrame, xAxis, yAxis, outputName):
     plt.errorbar(x = dataFrame["binMean"], y = dataFrame["mean"], yerr = dataFrame["std"], fmt='o', markersize = 3, capsize = 3, elinewidth = 1);
     plt.xlabel(xAxis, **csfont, fontsize = 14);
     plt.ylabel(yAxis, **csfont, fontsize = 14);
+    plt.ylim(0, 0.35);
     plt.savefig(outputName + ".pdf");
     plt.show();
+    
+
 
 if __name__ == "__main__":
     
-    # ellipData = getMeanSTD(ellipAllFile,"ellip","radius(Mpc/h)",bins);
-    # plotRelationship(ellipData, "Radius(Mpc/h)", "Ellipticity", "radiusEllipPlot");
+    ellipData = getMeanSTD(ellipAllFile,"ellip","radius(Mpc/h)",bins);
+    plotRelationship(ellipData, "Radius(Mpc/h)", "Ellipticity", "radiusEllipPlot");
    
-    densityData = getMeanSTD(densityAllFile,"densitycontrast", "radius",bins);
-    plotRelationship(densityData, "Radius(Mpc/h)", "Density contrast", "radiusDCPlot");
+    # densityData = getMeanSTD(densityAllFile,"densitycontrast", "radius",bins);
+    # plotRelationship(densityData, "Radius(Mpc/h)", "Density contrast", "radiusDCPlot");
     
+    
+    # df = pd.read_csv(densityAllFile, sep=" ")
+    # dcRange = df.loc[(df["densitycontrast"] > 1.0) & (df["densitycontrast"] < 3.5)]
+    # print(len(dcRange));
+    # range = dcRange.shape[0]/df.shape[0]
+    
+    # print(range);
     
     

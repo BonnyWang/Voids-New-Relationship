@@ -48,7 +48,7 @@ def generateAllPath():
         filesContainEllips.append(fileEllips);
     
     
-def mergeTwoByColumn(file1, file2, key ,outFile):
+def mergeTwoByColumn(file1, file2, key ,outFile, i):
     
     try:
         open(file1, "r");
@@ -61,12 +61,18 @@ def mergeTwoByColumn(file1, file2, key ,outFile):
     
     output = pd.merge(data1, data2, on=key, how="inner");
     
+    if not data1.loc[data1["densitycontrast"] > 10].empty:
+        print(i);
+        
+    
     # output[["voidID","radius(Mpc/h)", "ellip"]].to_csv(outFile,sep=" ", index=False);
     
     # Removed voidID since there are repeated ID in different simulation
     # Use concatination to the output instead of create a new file. 
     # output[["radius(Mpc/h)", "ellip"]].to_csv(outFile,sep=" ",mode="a", index=False, header=False);
-    output[["radius(Mpc/h)", "ellip"]].to_csv(outFile,sep=" ", index=False);
+    # output.rename(columns = {",centerx":"x", "z(Mpc/h)":"z"}, inplace = True)
+    # output[["index","x"]] = output["x"].str.split(",", expand=True)
+    # output[["voidID", "ellip", "densitycontrast"]].to_csv(outFile,sep=" ", index=False, mode="a", header=False);
 
 def divideToBins(file, binNumber,statColumnName, outFile):
     try:
@@ -116,13 +122,13 @@ def divideToBins(file, binNumber,statColumnName, outFile):
 # also for initial processing
 def createAllEllipRadiusFile():
     for i in range(2000):
-        ChangeFirstLine(filesContainRadius[i]);
-        ChangeFirstLine(filesContainEllips[i]);
-        mergeTwoByColumn(filesContainRadius[i], filesContainEllips[i],"voidID",Merged_Radius_Ellip);
+        # ChangeFirstLine(filesContainRadius[i]);
+        # ChangeFirstLine(filesContainEllips[i]);
+        mergeTwoByColumn(filesContainRadius[i], filesContainEllips[i],"voidID","Merged_DC_Ellip", i);
 
 def generateRelation_per_Simulation():     
     for i in range(2000):
-        outputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
+        outputFilePath = "./newData/void_Quijote_HR_"+ str(i) + "_ss1.0_z0.00_d00.out";
         mergeTwoByColumn(filesContainRadius[i], filesContainEllips[i],"voidID", outputFilePath);
 
 def generateAbundance_Ellip():
@@ -165,13 +171,15 @@ if __name__ == "__main__":
     # Merged_Radius_Ellip = "./Merged_Radius_Density_Contrast";
     
     generateAllPath();
+    # generateRelation_per_Simulation();
+    createAllEllipRadiusFile()
     
     # checkFileMissing();
     
     # generateAbundance_Ellip();
     # generateAbundance_DensityContrast();
     
-    combine_DensityandEllip();
+    # combine_DensityandEllip();
     
     # exploreRadius();
     
