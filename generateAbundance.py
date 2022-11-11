@@ -87,7 +87,7 @@ def divideToBins(file, binNumber,statColumnName, outFile):
     # max_value = data[statColumnName].max();
     
     # bins = np.linspace(0.99,4.5,binNumber+1);
-    bins = np.linspace(0.99,4.5,binNumber+1);
+    bins = np.linspace(0.99,3,binNumber+1);
     
     # Change the last number so that all the voids are included
     bins[0] = 0;
@@ -98,26 +98,21 @@ def divideToBins(file, binNumber,statColumnName, outFile):
 
     # print(data["bin"].value_counts());
     # Print the percentage of voids fall into the categorization compare to the whole dataset 
-    print(data["bin"].value_counts().sum()/ data.shape[0]);
+    # print(data["bin"].value_counts().sum()/ data.shape[0]);
     
     binnedData = data.groupby("bin").count()/data.shape[0];
     # print(data.groupby("bin")[statColumnName].mean());
     binnedData["mean"] = data.groupby("bin")[statColumnName].mean();
     
     
-    # Use the middle value for each bin instead of bin average
-    # binnedData[binColumnName] = [(bins[i] + bins[i+1])/2 for i in range(len(bins) - 1)];
-    # Set the bin value as the middle range but include the ones that are bigger
-    # binnedData[binColumnName] = [i for i in np.linspace(10.5,61.5,18)];
-    
-    binnedData_std = data.groupby("bin").std()
+    # binnedData_std = data.groupby("bin").std()
         
     # Fill in all the blanks with 0;
     binnedData.fillna(0, inplace=True);
     
-    binnedData[statColumnName].reset_index(drop=True).to_csv(outFile);
+    binnedData[[statColumnName, "mean"]].reset_index(drop=True).to_csv(outFile);
     
-    return binnedData, binnedData_std;
+    return binnedData;
 
 # also for initial processing
 def createAllEllipRadiusFile():
@@ -136,16 +131,31 @@ def generateAbundance_Ellip():
         inputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/relationship_Radius_Ellip_"+ str(i) + ".out";
         outFilePath = "./Abundance/abundance_z=0.0_" + str(i) + "_HR_linspace_60_5_19bins_untrimmed.csv";
         
-        divideToBins(inputFilePath,"radius(Mpc/h)",18,"ellip",outFilePath);
+        divideToBins(inputFilePath,18,"ellip",outFilePath);
         # getMeanStd(inputFilePath,"radius(Mpc/h)",18,"ellip",outFilePath);
         
 
 def generateAbundance_DensityContrast():
+    nVoid = 0
+    nfile = 0
     for i in range(2000):
         inputFilePath = "./Data/sample_Quijote_HR_"+str(i) + "_ss1.0_z0.00_d00/centers_all_Quijote_HR_"+ str(i) + "_ss1.0_z0.00_d00.out";
-        outFilePath = "./Abundance/abundance_z=0.0_" + str(i) + "_HR_linspace_60_5_19bins_untrimmed.csv.d";
+        outFilePath = "./Abundance/abundance_z=0.0_" + str(i) + "_HR_linspace_60_5_19bins_untrimmed.csv";
         
-        divideToBins(inputFilePath,"radius(Mpc/h)",18,"densitycontrast",outFilePath);  
+        try:
+            open(inputFilePath, "r");
+        except FileNotFoundError:
+            continue
+    
+    
+        data = pd.read_csv(inputFilePath, sep=" ");
+        
+        nVoid += data.shape[0]
+        nfile += 1
+    print(nVoid)
+    print(nfile)
+        
+        # divideToBins(inputFilePath,18,"densitycontrast",outFilePath);  
         
     # divideToBins(inputPath,"radius(Mpc/h)",18,"radius(Mpc/h)","radius?"); 
     
@@ -172,12 +182,12 @@ if __name__ == "__main__":
     
     generateAllPath();
     # generateRelation_per_Simulation();
-    createAllEllipRadiusFile()
+    # createAllEllipRadiusFile()
     
     # checkFileMissing();
     
     # generateAbundance_Ellip();
-    # generateAbundance_DensityContrast();
+    generateAbundance_DensityContrast();
     
     # combine_DensityandEllip();
     

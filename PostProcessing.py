@@ -59,8 +59,8 @@ def getRSquare_Coefficent(predicted, expected):
 def getErrorOver_Prediction(predicted, error):
     return np.divide(np.abs(error), predicted).mean();
 
-def calculateForEllipAll():
-    data = pd.read_csv("./Borrars/borrarDCMean36Para2.txt", sep=" ", header=None);
+def calculateForEllipAll(fileName):
+    data = pd.read_csv(filename, sep=" ", header=None);
     
     omegaM_True = data.iloc[:,0].to_numpy().ravel();    
     omegaM_Predicted = data.iloc[:,2].to_numpy().ravel();
@@ -80,7 +80,7 @@ def calculateForEllipAll():
     print(resultTable);
     
 def calculateForDensityContrastl():
-    data = pd.read_csv("./Borrars/Results_all_Paco.txt", sep=" ", header=None);
+    data = pd.read_csv("./Borrars/borrardcwithMean2Para100trial1.txt", sep=" ", header=None);
     
     omegaM_True = data.iloc[:,0].to_numpy().ravel();    
     omegaM_Predicted = data.iloc[:,5].to_numpy().ravel();
@@ -122,7 +122,7 @@ def plotData(out_File, data_True, data_Predict, data_Std, parameterName):
     
     extendValue = (data_True.max() - data_True.min())/30
     x_Range = [data_True.min() - extendValue, data_True.max() + extendValue ]
-    y_Range = [data_Predict.min()- extendValue , data_Predict.max()+extendValue ]
+    y_Range = [data_True.min()- extendValue , data_True.max()+extendValue ]
     
     fig=figure()
     ax1=fig.add_subplot(111) 
@@ -130,10 +130,11 @@ def plotData(out_File, data_True, data_Predict, data_Std, parameterName):
     ax1.set_ylabel(r'${\rm Inference}$',fontsize=18)
     p1=ax1.errorbar(data_True, data_Predict, data_Std,lw=1,fmt='o',ms=2,
                 elinewidth=1,capsize=5,linestyle='None') 
-    p1,=ax1.plot(x_Range, y_Range,linestyle='-',marker='None',c='k')
-    props = dict(boxstyle='square', facecolor='grey', alpha=0.07)
+    p1=ax1.plot(x_Range, y_Range,linestyle='-',marker='None',c='k')
+    # print(x_Range, y_Range)
+    props = dict(boxstyle='square', facecolor='white', alpha=0.07)
     ax1.text(0.05,0.9, parameterName, fontsize=18, color='k',transform=ax1.transAxes)
-    ax1.text(0.74,0.07,rf"$\chi^2 = {chiValue:.2f}$" +"\n"+ rf"$R^2 = {RSqaure:.2f}$" + "\n"+ rf"$RMSE = {RMSE:.2f}$"  + "\n" + rf"$MMRE = {ErrorOver_Prediction:.2f}$", fontsize=12, color='k',transform=ax1.transAxes,  bbox=props)
+    ax1.text(0.7,0.07,rf"$\chi^2 = {chiValue:.2f}$" +"\n"+ rf"$R^2 = {RSqaure:.2f}$" + "\n"+ r"${\rm RMSE} = $"+ f"{RMSE:.2f}$"  + "\n" + r"${\rm MMRE} = $"+ f"{ErrorOver_Prediction:.2f}$", fontsize=15, color='k',transform=ax1.transAxes,  bbox=props)
     savefig(Directory + out_File, bbox_inches='tight')
     show()
     close(fig)
@@ -142,19 +143,49 @@ def plotAll(fileName):
     file = fileName
     data = np.loadtxt(file)
     
+    gap = 5
+    i_Omega = 0
+    i_Sigma = 4
+    plotData("./Deepset_OmegaM.pdf",data[:,i_Omega], data[:,i_Omega + gap], data[:,i_Omega + gap*2], r"$\Omega_{\rm m}$")
+    plotData("./Deepset_Sigma8.pdf",data[:,i_Sigma], data[:,i_Sigma + gap], data[:,i_Sigma + gap*2], r"$\sigma_{\rm 8}$")
+    plotData("./Deepset_Ns.pdf",data[:,3], data[:,8], data[:,13], r"$n_{\rm s}$")
+
+def calculateEpstemic(groupName, index):
+    # Get the initial Size
+    allValues = np.loadtxt(groupName +  "0.txt")
+    allValues = allValues[np.newaxis, :]
     
-    plotData("./Deepset_OmegaM.png",data[:,0], data[:,5], data[:,10], r"$\Omega_{\rm m}$")
-    plotData("./Deepset_Sigma8.png",data[:,4], data[:,9], data[:,14], r"$\sigma_{\rm 8}$")
-    plotData("./Deepset_Ns.png",data[:,3], data[:,8], data[:,13], r"$n_{\rm s}$")
+    for i in range(1,10):
+        data = np.loadtxt(f"{groupName}{i}.txt")
+        data = data[np.newaxis, :]
+        allValues = np.append(allValues,  data, axis=0)
+    
+    # print(allValues[:,:,index])
+    error = np.std(allValues[:,:,index], axis=0)
+    
+    print(np.mean(error))
 
-
+def calcAleatoric(fileName, index):
+    file = fileName
+    data = np.loadtxt(file)
+    
+    print(np.mean(data[:,index]))
+        
 
 if __name__ == "__main__":
-    
-    # print("Ellip:");    
-    # calculateForEllipAll();
+   
+    # for i in range(10):
+    #     filename = f"./Borrars/borrardcwithMean2Para100trial{i}.txt"    
+    #     # print("Ellip:");    
+    #     # calculateForEllipAll(filename);
+    #     plotAll(filename)
     
     # print("Density Contrast:");
     # calculateForDensityContrastl();
     
-    plotAll('./Results_edr.txt')
+    # file = "./Borrars/borrardcwithMean2Para100trial"
+    # calculateEpstemic(file,2)
+    # calcAleatoric(file + "0.txt", 4)
+    
+    plotAll("./Results_edr.txt")
+    # plotAll('./Results_edr.txt')

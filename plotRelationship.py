@@ -1,8 +1,12 @@
 from numpy import linspace
 import pandas as pd;
 import matplotlib.pyplot as plt;
+import seaborn as sns
 
-
+rc = {"font.family" : "serif", 
+      "mathtext.fontset" : "stix"}
+plt.rcParams.update(rc)
+plt.rcParams["font.serif"] = ["Times New Roman"] + plt.rcParams["font.serif"]
 
 ellipAllFile = "Merged_Radius_Ellip_All.txt";
 densityAllFile = "Merged_Radius_Density_Contrast";
@@ -26,21 +30,31 @@ def getMeanSTD(fileName, statName, binName, bins):
 
 def plotRelationship(dataFrame, xAxis, yAxis, outputName):
     plt.errorbar(x = dataFrame["binMean"], y = dataFrame["mean"], yerr = dataFrame["std"], fmt='o', markersize = 3, capsize = 3, elinewidth = 1);
-    plt.xlabel(xAxis, **csfont, fontsize = 14);
-    plt.ylabel(yAxis, **csfont, fontsize = 14);
-    plt.ylim(0, 0.35);
+    plt.xlabel(r"$R$ (Mpc/h)", **csfont, fontsize = 14);
+    plt.ylabel(r"$\rho$", **csfont, fontsize = 14, fontstyle='italic');
+    # plt.ylim(0, 0.35);
     plt.savefig(outputName + ".pdf");
     plt.show();
+    
     
 
 
 if __name__ == "__main__":
     
-    ellipData = getMeanSTD(ellipAllFile,"ellip","radius(Mpc/h)",bins);
-    plotRelationship(ellipData, "Radius(Mpc/h)", "Ellipticity", "radiusEllipPlot");
+    # ellipData = getMeanSTD(ellipAllFile,"ellip","radius(Mpc/h)",bins);
+    # plotRelationship(ellipData, "Radius(Mpc/h)", "Ellipticity", "radiusEllipPlot");
+    
+    # df = pd.read_csv(ellipAllFile, sep=" ");
+    # bins = linspace(10.5, 61.5, 18)
+    # d = df["radius(Mpc/h)"].to_numpy().flatten()
+    # sns.histplot(d,bins=bins,stat="density", color="skyblue")
+    # plt.xlabel("Radius(Mpc/h)", **csfont, fontsize = 14);
+    # plt.ylabel("Density", **csfont, fontsize = 14);
+    # # plt
+    # plt.show()
    
-    # densityData = getMeanSTD(densityAllFile,"densitycontrast", "radius",bins);
-    # plotRelationship(densityData, "Radius(Mpc/h)", "Density contrast", "radiusDCPlot");
+    densityData = getMeanSTD(densityAllFile,"densitycontrast", "radius",bins);
+    plotRelationship(densityData, "Radius(Mpc/h)", "Density contrast", "radiusDCPlot");
     
     
     # df = pd.read_csv(densityAllFile, sep=" ")
